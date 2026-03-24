@@ -1,0 +1,111 @@
+/* PAGE BACKGROUND */
+
+/* MAIN PAGE */
+
+
+
+.form-page{
+  min-height:100vh;
+  display:flex;
+  justify-content:flex-end;
+  align-items:center;
+  gap:120px;
+  padding:60px 8%;
+  background-image: url(/templates/bginvitation.png);
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  /* brown cream gradient */
+}
+
+
+/* FORM SECTION */
+
+.form-section{
+  width:420px;
+  background:rgba(1, 1, 1, 0.607);
+  padding:40px;
+  border-radius:18px;
+
+  box-shadow:0 12px 35px rgba(0,0,0,0.08);
+}
+
+
+/* TITLE */
+
+.form-section h2{
+  margin-bottom:25px;
+  font-size:26px;
+  color:#868380;
+  font-weight:700;
+  text-align:center;
+}
+
+
+/* FORM LAYOUT */
+
+.form-section form{
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+}
+
+
+/* INPUTS */
+
+.form-section input{
+  padding:14px;
+  border:1px solid #4d2d08;
+  border-radius:8px;
+  font-size:15px;
+  outline:none;
+  transition:0.25s;
+  background:#d1b394;
+}
+
+
+/* INPUT FOCUS */
+
+.form-section input:focus{
+  border-color:#b88a63;
+  box-shadow:0 0 0 3px rgba(184,138,99,0.2);
+}
+
+
+/* BUTTON */
+
+.form-section button{
+  margin-top:10px;
+  padding:14px;
+  border:none;
+  border-radius:8px;
+
+  background:#673c14;
+  color:rgb(232, 230, 230);
+  font-size:16px;
+  font-weight:500;
+
+  cursor:pointer;
+  transition:0.25s;
+}
+
+
+/* BUTTON HOVER */
+
+.form-section button:hover{
+  background:#5d2e0d;
+}
+/* PREVIEW AREA */
+.preview-section {
+  width: 60%;
+  display: flex;
+  justify-content: center;
+  padding-left:200px;
+  align-items: center;
+}
+
+/* CARD SHADOW ENHANCEMENT */
+.invitation-card {
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.15);
+}
+
