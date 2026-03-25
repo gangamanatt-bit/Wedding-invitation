@@ -9,7 +9,7 @@ import Template3 from "../components/Template3";
 import Template4 from "../components/Template4";
 import Template5 from "../components/Template5";
 import Template6 from "../components/Template6";
-import "../styles/FormPage.css";
+import "../styles/Formpage.css";
 
 function FormPage() {
 
