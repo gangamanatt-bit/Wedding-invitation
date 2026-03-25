@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
+import axios from "axios";
 
 import Template1 from "../components/Template1";
 import Template2 from "../components/Template2";
@@ -29,6 +30,7 @@ function DownloadPage() {
     document.addEventListener("click", handleClick);
     return () => document.removeEventListener("click", handleClick);
   }, []);
+  
 
   const updateField = (e) => {
     setEditData({
@@ -38,33 +40,61 @@ function DownloadPage() {
   };
 
   const handleUpdate = () => {
-    setData(editData);
-    setShowModal(false);
-  };
+
+  axios.put(`http://localhost:3000/invitations/${data.id}`, editData)
+    .then(() => {
+      setData(editData);
+      setShowModal(false);
+    })
+    .catch(err => console.log(err));
+};
 
   const downloadImage = async () => {
 
-    setShowDownload(false);   // close menu immediately
+  if (!data?.id) {
+    console.log("No ID found");
+    return;
+  }
 
-    const canvas = await html2canvas(cardRef.current, { scale: 3 });
+  setShowDownload(false);
 
-    const link = document.createElement("a");
-    link.download = "invitation.png";
-    link.href = canvas.toDataURL();
-    link.click();
-  };
+  const canvas = await html2canvas(cardRef.current, { scale: 3 });
 
-  const downloadPDF = async () => {
+  const link = document.createElement("a");
+  link.download = "invitation.png";
+  link.href = canvas.toDataURL();
+  link.click();
 
-    setShowDownload(false);   // close menu immediately
+  axios.patch(`http://localhost:3000/invitations/${data.id}`, {
+    downloaded: true
+  })
+  .then(res => console.log("Updated:", res.data))
+  .catch(err => console.log(err));
+};
+ const downloadPDF = async () => {
 
-    const canvas = await html2canvas(cardRef.current, { scale: 3 });
-    const imgData = canvas.toDataURL("image/png");
+  if (!data?.id) {
+    console.log("No ID found, cannot update");
+    return;
+  }
 
-    const pdf = new jsPDF("p", "mm", "a4");
-    pdf.addImage(imgData, "PNG", 15, 40, 180, 120);
-    pdf.save("invitation.pdf");
-  };
+  setShowDownload(false);
+
+  const canvas = await html2canvas(cardRef.current, { scale: 3 });
+  const imgData = canvas.toDataURL("image/png");
+
+  const pdf = new jsPDF("p", "mm", "a4");
+  pdf.addImage(imgData, "PNG", 15, 40, 180, 120);
+  pdf.save("invitation.pdf");
+
+  axios.patch(`http://localhost:3000/invitations/${data.id}`, {
+    downloaded: true
+  })
+  .then(res => console.log("PDF saved:", res.data))
+  .catch(err => console.log(err));
+};
+console.log("LOCATION STATE:", location.state);
+console.log("DATA:", data);
   return (
 
     <div className="download-page">
@@ -74,6 +104,9 @@ function DownloadPage() {
       <div className="top-bar">
 
         <button onClick={() => navigate(-1)}>← Back</button>
+        <button onClick={() => navigate("/history")}>
+          View History
+        </button>
 
         <button onClick={() => navigate("/")}>Reload</button>
 

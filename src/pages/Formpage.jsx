@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
+import axios from "axios";
 
 import Template1 from "../components/Template1";
 import Template2 from "../components/Template2";
@@ -36,7 +37,7 @@ function FormPage() {
         time: "",
         venue: "",
         inviteLine: "Together with their families",
-         requestLine: "request the pleasure of your presence"
+        requestLine: "request the pleasure of your presence"
       }}
       validationSchema={validationSchema}
     >
@@ -61,14 +62,20 @@ function FormPage() {
 
               <button
                 type="button"
-                onClick={() =>
+                onClick={async () => {
+
+                  const newData = {
+                    templateId: id,
+                    ...values
+                  };
+
+                  await axios.post("http://localhost:3000/invitations", newData);
+
                   navigate("/download", {
-                    state: {
-                      templateId: id,
-                      ...values
-                    }
-                  })
-                }
+                    state: newData
+                  });
+
+                }}
               >
                 Finish
               </button>
