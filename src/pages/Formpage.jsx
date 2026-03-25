@@ -69,7 +69,7 @@ function FormPage() {
                     ...values
                   };
 
-                  await axios.post("http://localhost:3000/invitations", newData);
+                  await axios.post("https://invitation-server-b26b.onrender.com/invitations", newData);
 
                   navigate("/download", {
                     state: newData

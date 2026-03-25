@@ -15,7 +15,7 @@ function HistoryPage() {
   const navigate = useNavigate();
 
   const deleteInvitation = (id) => {
-    axios.delete(`http://localhost:3000/invitations/${id}`)
+    axios.delete(`https://invitation-server-b26b.onrender.com/invitations/${id}`)
       .then(() => {
         setData(data.filter(item => item.id !== id));
       })
@@ -23,7 +23,7 @@ function HistoryPage() {
   };
 
   useEffect(() => {
-    axios.get("http://localhost:3000/invitations")
+    axios.get("https://invitation-server-b26b.onrender.com/invitations")
       .then(res => setData(res.data))   // ✅ IMPORTANT
       .catch(err => console.log(err));
   }, []);

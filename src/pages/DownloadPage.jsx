@@ -41,7 +41,7 @@ function DownloadPage() {
 
   const handleUpdate = () => {
 
-  axios.put(`http://localhost:3000/invitations/${data.id}`, editData)
+  axios.put(`https://invitation-server-b26b.onrender.com/invitations/${data.id}`, editData)
     .then(() => {
       setData(editData);
       setShowModal(false);
@@ -65,7 +65,7 @@ function DownloadPage() {
   link.href = canvas.toDataURL();
   link.click();
 
-  axios.patch(`http://localhost:3000/invitations/${data.id}`, {
+  axios.patch(`https://invitation-server-b26b.onrender.com/invitations/${data.id}`, {
     downloaded: true
   })
   .then(res => console.log("Updated:", res.data))
@@ -87,7 +87,7 @@ function DownloadPage() {
   pdf.addImage(imgData, "PNG", 15, 40, 180, 120);
   pdf.save("invitation.pdf");
 
-  axios.patch(`http://localhost:3000/invitations/${data.id}`, {
+  axios.patch(`https://invitation-server-b26b.onrender.com/invitations/${data.id}`, {
     downloaded: true
   })
   .then(res => console.log("PDF saved:", res.data))
