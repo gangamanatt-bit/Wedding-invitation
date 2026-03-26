@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import axios from "axios";
+
 
 import Template1 from "../components/Template1";
 import Template2 from "../components/Template2";
@@ -17,20 +18,33 @@ function DownloadPage() {
 
 
   const navigate = useNavigate();
-  const location = useLocation();
   const cardRef = useRef();
-
-  const [data, setData] = useState(location.state || {});
+ const { id } = useParams();
+const [data, setData] = useState(null);
   const [editData, setEditData] = useState(data);
   const [showModal, setShowModal] = useState(false);
   const [showDownload, setShowDownload] = useState(false);
+
+  
+
+
+useEffect(() => {
+  axios.get(`https://invitation-server-b26b.onrender.com/invitations/${id}`)
+    .then(res => setData(res.data))
+    .catch(err => console.log(err));
+}, [id]);
 
   useEffect(() => {
     const handleClick = () => setShowDownload(false);
     document.addEventListener("click", handleClick);
     return () => document.removeEventListener("click", handleClick);
   }, []);
-  
+
+  useEffect(() => {
+  if (data) {
+    setEditData(data);
+  }
+}, [data]);
 
   const updateField = (e) => {
     setEditData({
@@ -40,26 +54,23 @@ function DownloadPage() {
   };
 
   const handleUpdate = () => {
-
-  axios.put(`https://invitation-server-b26b.onrender.com/invitations/${data.id}`, editData)
-    .then(() => {
-      setData(editData);
-      setShowModal(false);
-    })
-    .catch(err => console.log(err));
+  axios.patch(
+    `https://invitation-server-b26b.onrender.com/invitations/${data.id}`,
+    editData
+  )
+  .then(res => {
+    setData(res.data);
+    setShowModal(false);
+  })
+  .catch(err => console.log(err));
 };
 
-  const downloadImage = async () => {
-
-  if (!data?.id) {
-    console.log("No ID found");
-    return;
-  }
+ const downloadImage = async () => {
+  if (!data?.id) return;
 
   setShowDownload(false);
 
   const canvas = await html2canvas(cardRef.current, { scale: 3 });
-
   const link = document.createElement("a");
   link.download = "invitation.png";
   link.href = canvas.toDataURL();
@@ -68,7 +79,10 @@ function DownloadPage() {
   axios.patch(`https://invitation-server-b26b.onrender.com/invitations/${data.id}`, {
     downloaded: true
   })
-  .then(res => console.log("Updated:", res.data))
+  .then(res => {
+    setData(res.data); // ✅ Update local state
+    console.log("Updated:", res.data);
+  })
   .catch(err => console.log(err));
 };
  const downloadPDF = async () => {
@@ -86,15 +100,16 @@ function DownloadPage() {
   const pdf = new jsPDF("p", "mm", "a4");
   pdf.addImage(imgData, "PNG", 15, 40, 180, 120);
   pdf.save("invitation.pdf");
-
-  axios.patch(`https://invitation-server-b26b.onrender.com/invitations/${data.id}`, {
+   axios.patch(`https://invitation-server-b26b.onrender.com/invitations/${data.id}`, {
     downloaded: true
   })
   .then(res => console.log("PDF saved:", res.data))
   .catch(err => console.log(err));
 };
-console.log("LOCATION STATE:", location.state);
 console.log("DATA:", data);
+if (!data) {
+  return <h2 style={{ textAlign: "center" }}>Loading...</h2>;
+}
   return (
 
     <div className="download-page">
@@ -132,7 +147,7 @@ console.log("DATA:", data);
 
           {showDownload && (
 
-            <div className="download-menu">
+            <div onClick={e => e.stopPropagation()} className="download-menu">
 
               <button onClick={downloadImage}>
                 Download Image
@@ -248,5 +263,4 @@ console.log("DATA:", data);
     </div>
   );
 }
-
-export default DownloadPage;
+export default DownloadPage

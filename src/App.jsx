@@ -16,7 +16,7 @@ function App() {
         <Route path="/about" element={<About />} />
          <Route path="/form/:templateId" element={<FormPage />} />
          <Route path="/history" element={<HistoryPage />} />
-          <Route path="/download" element={<DownloadPage />} />
+          <Route path="/download/:id" element={<DownloadPage />} />
       </Routes>
     </Router>
   );

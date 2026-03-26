@@ -31,18 +31,38 @@ function FormPage() {
 
     <Formik
       initialValues={{
-        bride: "",
-        groom: "",
-        date: "",
-        time: "",
-        venue: "",
-        inviteLine: "Together with their families",
-        requestLine: "request the pleasure of your presence"
-      }}
-      validationSchema={validationSchema}
+    bride: "",
+    groom: "",
+    date: "",
+    time: "",
+    venue: "",
+    inviteLine: "Together with their families",
+    requestLine: "request the pleasure of your presence"
+  }}
+  validationSchema={validationSchema}
+  onSubmit={async (values) => {
+    try {
+      const newData = {
+        templateId: id,
+        ...values,
+      };
+
+      const res = await axios.post(
+        "https://invitation-server-b26b.onrender.com/invitations",
+        newData
+      );
+
+      navigate(`/download/${res.data.id}`, {
+        state: res.data,
+      });
+
+    } catch (err) {
+      console.error(err);
+    }
+  }}
     >
 
-      {({ values }) => (
+      {({ values, errors, touched })  => (
 
         <div className="form-page">
 
@@ -55,27 +75,19 @@ function FormPage() {
             <Form>
 
               <Field name="bride" placeholder="Bride Name" />
+              {touched.bride && errors.bride && (
+  <p style={{ color: "red" }}>{errors.bride}</p>
+)}
               <Field name="groom" placeholder="Groom Name" />
+              {touched.groom && errors.groom && <p style={{ color: "red" }}>{errors.groom}</p>}
               <Field type="date" name="date" />
+              {touched.date && errors.date && <p style={{ color: "red" }}>{errors.date}</p>}
               <Field type="time" name="time" />
+              {touched.time && errors.time && <p style={{ color: "red" }}>{errors.time}</p>}
               <Field name="venue" placeholder="Venue" />
-
+               {touched.venue && errors.venue && <p style={{ color: "red" }}>{errors.venue}</p>}
               <button
-                type="button"
-                onClick={async () => {
-
-                  const newData = {
-                    templateId: id,
-                    ...values
-                  };
-
-                  await axios.post("https://invitation-server-b26b.onrender.com/invitations", newData);
-
-                  navigate("/download", {
-                    state: newData
-                  });
-
-                }}
+                type="submit"
               >
                 Finish
               </button>

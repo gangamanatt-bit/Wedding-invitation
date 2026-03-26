@@ -14,19 +14,23 @@ function HistoryPage() {
   const [data, setData] = useState([]);
   const navigate = useNavigate();
 
-  const deleteInvitation = (id) => {
-    axios.delete(`https://invitation-server-b26b.onrender.com/invitations/${id}`)
-      .then(() => {
-        setData(data.filter(item => item.id !== id));
-      })
-      .catch(err => console.log(err));
-  };
+ const deleteInvitation = (id) => {
+  axios.delete(`https://invitation-server-b26b.onrender.com/invitations/${id}`)
+    .then(() => {
+      setData(prevData => prevData.filter(item => item.id !== id && item.downloaded));
+    })
+    .catch(err => console.log(err));
+};
 
   useEffect(() => {
-    axios.get("https://invitation-server-b26b.onrender.com/invitations")
-      .then(res => setData(res.data))   // ✅ IMPORTANT
-      .catch(err => console.log(err));
-  }, []);
+  axios.get("https://invitation-server-b26b.onrender.com/invitations")
+    .then(res => {
+      // Only keep downloaded invitations
+      const downloaded = res.data.filter(item => item.downloaded);
+      setData(downloaded);
+    })
+    .catch(err => console.log(err));
+}, []);
 
  return (
   <div style={{ backgroundColor: "#ddd4d4",padding: "20px", minHeight: "100vh",
